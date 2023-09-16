@@ -12,11 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.socket = void 0;
+exports._socket = void 0;
 const baileys_1 = require("@whiskeysockets/baileys");
 const setting_1 = require("../setting");
 const pino_1 = __importDefault(require("pino"));
-const socket = () => __awaiter(void 0, void 0, void 0, function* () {
+const _socket = () => __awaiter(void 0, void 0, void 0, function* () {
     const { state, saveCreds } = yield (0, baileys_1.useMultiFileAuthState)(setting_1.setting.session_name);
     const bot = (0, baileys_1.makeWASocket)({
         printQRInTerminal: true,
@@ -39,4 +39,4 @@ const socket = () => __awaiter(void 0, void 0, void 0, function* () {
     bot.ev.on("creds.update", saveCreds);
     return bot;
 });
-exports.socket = socket;
+exports._socket = _socket;

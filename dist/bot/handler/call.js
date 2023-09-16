@@ -8,7 +8,6 @@ const chalk_1 = __importDefault(require("chalk"));
 const setting_1 = require("../../setting");
 const _call = (call, bot) => {
     const { chatId, date, from, id, offline, status, isGroup, isVideo, latencyMs } = call;
-    console.log({ call });
     switch (status) {
         case 'accept':
             {
@@ -23,9 +22,9 @@ const _call = (call, bot) => {
                 bot.rejectCall(id || chatId, from);
             }
             break;
-        case "reject":
+        case 'reject':
             {
-                console.log((0, chalk_1.default) `{blue ${setting_1.setting.bot_name} {gray ⚠.> ${from.replace('@s.whatsapp.net', '')} is calling at ${date} }}`);
+                console.log((0, chalk_1.default) `{blue ${setting_1.setting.bot_name} {gray ⚠.> ${from.replace('@s.whatsapp.net', '')} is rejected call at ${date} }}`);
                 bot.rejectCall(id || chatId, from);
             }
             break;

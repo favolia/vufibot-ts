@@ -12,22 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.startBot = void 0;
 const connection_1 = require("./connection/connection");
 const call_1 = require("./bot/handler/call");
+const message_1 = require("./bot/message");
 const socket_1 = require("./connection/socket");
 function startBot() {
     return __awaiter(this, void 0, void 0, function* () {
-        const bot = yield (0, socket_1.socket)();
+        const bot = yield (0, socket_1._socket)();
         bot.ev.on('connection.update', (update) => (0, connection_1._connection)(update));
         bot.ev.on('call', (call) => __awaiter(this, void 0, void 0, function* () { return (0, call_1._call)(call[0], bot); }));
-        bot.ev.on('messages.upsert', (m) => __awaiter(this, void 0, void 0, function* () {
-            if (m.messages[0].key.fromMe)
-                return;
-            // console.log(JSON.stringify(m, undefined, 2))
-            // console.log('replying to', m.messages[0].key.remoteJid)
-            // await bot.sendMessage(m.messages[0].key.remoteJid!, { text: 'Hello there!' })
-            // await bot.sendMessage('628875090455@s.whatsapp.net', { text: 'Hello there!' })
-        }));
+        bot.ev.on('messages.upsert', (M) => __awaiter(this, void 0, void 0, function* () { return yield (0, message_1._MESSAGE)(M, bot); }));
     });
 }
 exports.startBot = startBot;
-// run in main file
 startBot();
