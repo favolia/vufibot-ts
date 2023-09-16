@@ -8,7 +8,7 @@ import pino from "pino";
 export const _socket = async () => {
     const { state, saveCreds } = await useMultiFileAuthState(setting.session_name);
 
-    const bot : any = makeWASocket({
+    const bot = makeWASocket({
         printQRInTerminal: true,
         auth: state,
         logger: pino({
@@ -28,6 +28,6 @@ export const _socket = async () => {
     })
 
     bot.ev.on("creds.update", saveCreds);
-
+    // bot.sendMessage(null, {audio: {url: ''}, mimetype: 'audio/ogg', ptt}, {quoted: })
     return bot;
 }

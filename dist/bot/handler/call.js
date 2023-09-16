@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._call = void 0;
 const chalk_1 = __importDefault(require("chalk"));
 const setting_1 = require("../../setting");
-const _call = (call, bot) => {
+const _call = (call) => {
+    const bot = global.bot;
     const { chatId, date, from, id, offline, status, isGroup, isVideo, latencyMs } = call;
     switch (status) {
         case 'accept':

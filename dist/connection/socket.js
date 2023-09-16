@@ -37,6 +37,7 @@ const _socket = () => __awaiter(void 0, void 0, void 0, function* () {
         generateHighQualityLinkPreview: true,
     });
     bot.ev.on("creds.update", saveCreds);
+    // bot.sendMessage(null, {audio: {url: ''}, mimetype: 'audio/ogg', ptt}, {quoted: })
     return bot;
 });
 exports._socket = _socket;

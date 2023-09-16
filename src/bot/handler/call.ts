@@ -2,7 +2,9 @@ import { WACallEvent } from "@whiskeysockets/baileys";
 import chalk from 'chalk';
 import { setting } from '../../setting';
 
-export const _call = (call: WACallEvent, bot: any) => {
+export const _call = (call: WACallEvent) => {
+    const bot = global.bot
+
     const {
         chatId,
         date,
