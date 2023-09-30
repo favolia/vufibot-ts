@@ -12,12 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.quickReply = void 0;
 const quickReply = (message) => __awaiter(void 0, void 0, void 0, function* () {
     const bot = global.bot;
-    const msg = message.toLowerCase();
+    const msg = message === null || message === void 0 ? void 0 : message.toLowerCase();
     switch (msg) {
         case 'sad':
-            bot.sendMessage(global.from, { text: 'kasian.' });
+            {
+                bot.sendMessage(global.from, { text: 'kasian.' });
+            }
             break;
-        default:
+        case 'anjing':
+        case 'anj':
+        case 'bgst':
+        case 'bangsat':
+            {
+                bot.sendMessage(global.from, { text: 'kasar ngana.' });
+            }
+            break;
+        case 'assalamualaikum':
+        case 'assalamualaikumm':
+        case 'samlekom':
+            {
+                bot.sendMessage(global.from, { text: 'walaikum salam.' });
+            }
             break;
     }
     return;

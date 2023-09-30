@@ -3,4 +3,4 @@ declare global {
     var from: string;
 }
 
-export {};
+export { };
