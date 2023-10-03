@@ -220,7 +220,7 @@ export const _MESSAGE = async (M: any,) => {
                 quoted: {
                     key: {
                         id: 'WhatsApp',
-                        remoteJid: '0@s.whatsapp.net',
+                        remoteJid: setting.owner[0].number,
                         participant: '0@s.whatsapp.net',
                     },
                     message: {
