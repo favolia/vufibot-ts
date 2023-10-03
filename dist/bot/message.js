@@ -157,7 +157,7 @@ const _MESSAGE = (M) => __awaiter(void 0, void 0, void 0, function* () {
                     quoted: {
                         key: {
                             id: 'WhatsApp',
-                            remoteJid: setting_1.setting.owner[0].number,
+                            remoteJid: from,
                             participant: '0@s.whatsapp.net',
                         },
                         message: {
