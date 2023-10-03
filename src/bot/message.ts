@@ -63,8 +63,6 @@ export const _MESSAGE = async (M: any,) => {
     const userJid: string | null | undefined = key?.remoteJid?.includes('@g.us') ? key.participant : key.remoteJid;
     const isOwner: boolean = setting.owner.some((owner: any) => owner.number === userJid);
 
-  console.log(from)
-
     const groupInfo = await bot.groupMetadata(from);
     const isAdmin = groupInfo.participants.some((participant: any) => participant.id === userJid && (participant.admin === 'admin' || participant.admin === 'superadmin'));
 
@@ -223,7 +221,7 @@ export const _MESSAGE = async (M: any,) => {
                     key: {
                         id: 'WhatsApp',
                         remoteJid: from,
-                        participant: '628811223344@s.whatsapp.net',
+                        participant: '0@s.whatsapp.net',
                     },
                     message: {
                         conversation: `hidetag from _*${isOwner ? pushName + '👑' : pushName + '🗿'}*_`

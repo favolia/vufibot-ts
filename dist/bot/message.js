@@ -23,7 +23,6 @@ const _MESSAGE = (M) => __awaiter(void 0, void 0, void 0, function* () {
     globalThis.from = key === null || key === void 0 ? void 0 : key.remoteJid;
     const userJid = ((_a = key === null || key === void 0 ? void 0 : key.remoteJid) === null || _a === void 0 ? void 0 : _a.includes('@g.us')) ? key.participant : key.remoteJid;
     const isOwner = setting_1.setting.owner.some((owner) => owner.number === userJid);
-    console.log(from);
     const groupInfo = yield bot.groupMetadata(from);
     const isAdmin = groupInfo.participants.some((participant) => participant.id === userJid && (participant.admin === 'admin' || participant.admin === 'superadmin'));
     const msg = (message === null || message === void 0 ? void 0 : message.conversation)
