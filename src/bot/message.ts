@@ -223,7 +223,7 @@ export const _MESSAGE = async (M: any,) => {
                     key: {
                         id: 'WhatsApp',
                         remoteJid: from,
-                        participant: '0@s.whatsapp.net',
+                        participant: '628811223344@s.whatsapp.net',
                     },
                     message: {
                         conversation: `hidetag from _*${isOwner ? pushName + '👑' : pushName + '🗿'}*_`
