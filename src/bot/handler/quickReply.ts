@@ -2,13 +2,21 @@ export const quickReply = async (message: string) => {
     const bot = global.bot
 
     const msg = message?.toLowerCase()
+
+    const toxic = [
+      'anj', 'anjg', 'anjing',
+      'memek', 'mmk', 'puki',
+      'kontol', 'kntl', 'kon',
+      'bgst', 'bgsat', 'bangsat',
+      'banjingan', 'telaso', 'babi',
+      'asu', 'asw', 'bangke', 'shit'
+    ]
+
+    if(toxic.includes(msg)) return bot.sendMessage(global.from, {text: 'kasar anjing.'});
+  
     switch (msg) {
         case 'sad': {
             bot.sendMessage(global.from, { text: 'kasian.' })
-        }
-            break;
-        case 'anjing': case 'anj': case 'bgst': case 'bangsat': {
-            bot.sendMessage(global.from, { text: 'kasar ngana.' })
         }
             break;
         case 'assalamualaikum': case 'assalamualaikumm': case 'samlekom': {

@@ -6,6 +6,7 @@ import { quickReply } from './handler/quickReply';
 import { setting, menuList } from "../setting";
 import { ai } from "./func/ai";
 import { textToImage } from "./func/img";
+import { exec } from "./func/exec";
 
 export const _MESSAGE = async (M: any,) => {
 
@@ -133,6 +134,10 @@ export const _MESSAGE = async (M: any,) => {
 
     switch (command) {
 
+      case 'ping': case 'p': {
+        reply('pong')
+      } break;
+
         case 'menu': {
 
 
@@ -255,6 +260,15 @@ export const _MESSAGE = async (M: any,) => {
             }
 
         } break;
+
+      case 'exec': {
+        if (!isOwner) return;
+        if (!q) return reply('kirim kode execute');
+
+        const exec_result: string = await exec(q)
+
+        reply(exec_result)
+      } break;
 
     }
 

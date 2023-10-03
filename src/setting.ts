@@ -61,4 +61,9 @@ export const menuList = [
         role: 'Owner',
         description: 'Evaluate'
     },
+    {
+        name: 'exec',
+        role: 'Owner',
+        description: 'Execute bash command'
+    },
 ]

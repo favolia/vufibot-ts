@@ -13,18 +13,20 @@ exports.quickReply = void 0;
 const quickReply = (message) => __awaiter(void 0, void 0, void 0, function* () {
     const bot = global.bot;
     const msg = message === null || message === void 0 ? void 0 : message.toLowerCase();
+    const toxic = [
+        'anj', 'anjg', 'anjing',
+        'memek', 'mmk', 'puki',
+        'kontol', 'kntl', 'kon',
+        'bgst', 'bgsat', 'bangsat',
+        'banjingan', 'telaso', 'babi',
+        'asu', 'asw', 'bangke', 'shit'
+    ];
+    if (toxic.includes(msg))
+        return bot.sendMessage(global.from, { text: 'kasar anjing.' });
     switch (msg) {
         case 'sad':
             {
                 bot.sendMessage(global.from, { text: 'kasian.' });
-            }
-            break;
-        case 'anjing':
-        case 'anj':
-        case 'bgst':
-        case 'bangsat':
-            {
-                bot.sendMessage(global.from, { text: 'kasar ngana.' });
             }
             break;
         case 'assalamualaikum':

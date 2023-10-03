@@ -25,7 +25,7 @@ const _socket = () => __awaiter(void 0, void 0, void 0, function* () {
             level: setting_1.setting.socket_config.logger_level
         }),
         browser: [
-            setting_1.setting.bot_name,
+            'Safari',
             setting_1.setting.socket_config.browser,
             setting_1.setting.socket_config.browser_version
         ],

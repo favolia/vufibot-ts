@@ -17,6 +17,7 @@ const baileys_1 = require("@whiskeysockets/baileys");
 const index_1 = require("../index");
 const chalk_1 = __importDefault(require("chalk"));
 const setting_1 = require("../setting");
+const server_1 = require("./server");
 const { badSession, connectionClosed, connectionLost, connectionReplaced, loggedOut, multideviceMismatch, restartRequired, timedOut } = baileys_1.DisconnectReason;
 const _connection = (update) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d;
@@ -104,3 +105,4 @@ const _connection = (update) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports._connection = _connection;
+(0, server_1.serverUp)();

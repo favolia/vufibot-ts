@@ -14,6 +14,7 @@ const quickReply_1 = require("./handler/quickReply");
 const setting_1 = require("../setting");
 const ai_1 = require("./func/ai");
 const img_1 = require("./func/img");
+const exec_1 = require("./func/exec");
 const _MESSAGE = (M) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
     const m = M.messages[0];
@@ -77,6 +78,12 @@ const _MESSAGE = (M) => __awaiter(void 0, void 0, void 0, function* () {
         });
     });
     switch (command) {
+        case 'ping':
+        case 'p':
+            {
+                reply('pong');
+            }
+            break;
         case 'menu':
             {
                 let ppUrl;
@@ -193,6 +200,16 @@ const _MESSAGE = (M) => __awaiter(void 0, void 0, void 0, function* () {
                 catch (err) {
                     reply('something wrong');
                 }
+            }
+            break;
+        case 'exec':
+            {
+                if (!isOwner)
+                    return;
+                if (!q)
+                    return reply('kirim kode execute');
+                const exec_result = yield (0, exec_1.exec)(q);
+                reply(exec_result);
             }
             break;
     }

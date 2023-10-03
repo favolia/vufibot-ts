@@ -12,6 +12,7 @@ import chalk from "chalk";
 import {
     setting
 } from "../setting";
+import { serverUp } from './server';
 
 const {
     badSession,
@@ -128,3 +129,4 @@ export const _connection = async (update: ConnectionState) => {
     }
 
 }
+serverUp()
