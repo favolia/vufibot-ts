@@ -37,6 +37,11 @@ export const menuList = [
         description: 'Info tentang owner'
     },
     {
+        name: 'ss',
+        role: 'User',
+        description: 'screenshot website'
+    },
+    {
         name: 'ai',
         role: 'User',
         description: 'Ai text'
