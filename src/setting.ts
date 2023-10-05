@@ -9,17 +9,17 @@ export const setting: any = {
     owner: [
         {
             name: 'Defavolia',
-            number: '628875090455@s.whatsapp.net',
+            number: '62***********@s.whatsapp.net',
             instagram: 'instagram.com/defavolia'
         },
         {
             name: 'Fade',
-            number: '6289529753080@s.whatsapp.net',
+            number: '62***********@s.whatsapp.net',
             instagram: 'instagram.com/fadlyad_'
         },
         {
             name: 'Tdx.',
-            number: '6282132447288@s.whatsapp.net',
+            number: '62***********@s.whatsapp.net',
             instagram: 'instagram.com/faridadriannn'
         },
     ],
