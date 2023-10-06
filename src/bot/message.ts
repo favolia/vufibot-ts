@@ -259,7 +259,7 @@ export const _MESSAGE = async (M: any) => {
     full: true
   };
 
-  const endpoint: string = `https://backup15.terasp.net/api/screenshot?${splitText[1].trim() == 'mobile' ? type.mobile : type.desktop}&outFormat=png&waitTime=200&isFullPage=${splitText[1].trim() == 'full' ? type.full : !type.full}&url=${splitText[0].trim()}`;
+  const endpoint: string = `https://backup15.terasp.net/api/screenshot?${splitText[1] && splitText[1].trim() == 'mobile' ? type.mobile : type.desktop}&outFormat=png&waitTime=200&isFullPage=${splitText[1] && splitText[1].trim() == 'full' ? type.full : !type.full}&url=${splitText[0].trim()}`;
 
   await sendImgCap(endpoint, q).catch(err => reply('gagal.'));
 } break;
