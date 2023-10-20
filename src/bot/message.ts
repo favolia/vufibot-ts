@@ -3,7 +3,7 @@ import {
   proto
 } from '@whiskeysockets/baileys';
 import { quickReply } from './handler/quickReply';
-import { setting, menuList } from "../setting";
+import { setting, menuList } from "../setting2";
 import { ai } from "./func/ai";
 import { textToImage } from "./func/img";
 import { exec } from "./func/exec";

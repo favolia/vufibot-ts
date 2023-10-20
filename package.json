@@ -17,7 +17,10 @@
     "axios": "^1.5.0",
     "chalk": "4.0.0",
     "express": "^4.18.2",
+    "hikki-me": "^2.0.0",
+    "moment": "^2.29.4",
     "pino": "^8.15.1",
-    "qrcode-terminal": "^0.12.0"
+    "qrcode-terminal": "^0.12.0",
+    "scrape-websitee": "^1.0.54"
   }
 }
