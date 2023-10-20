@@ -4,7 +4,7 @@ export const quickReply = async (message: string) => {
     const msg = message?.toLowerCase()
 
     const toxic = [
-      'anj', 'anjg', 'anjing',
+      'anj', 'anjg', 'anjing', 'ajg',
       'memek', 'mmk', 'puki',
       'kontol', 'kntl', 'kon',
       'bgst', 'bgsat', 'bangsat',
