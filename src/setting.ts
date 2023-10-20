@@ -9,17 +9,17 @@ export const setting: any = {
     owner: [
         {
             name: 'Defavolia',
-            number: '628875090455@s.whatsapp.net',
+            number: '62***********@s.whatsapp.net',
             instagram: 'instagram.com/defavolia'
         },
         {
             name: 'Fade',
-            number: '6289529753080@s.whatsapp.net',
+            number: '62***********@s.whatsapp.net',
             instagram: 'instagram.com/fadlyad_'
         },
         {
             name: 'Tdx.',
-            number: '6282132447288@s.whatsapp.net',
+            number: '62***********@s.whatsapp.net',
             instagram: 'instagram.com/faridadriannn'
         },
     ],
@@ -35,6 +35,11 @@ export const menuList = [
         name: 'owner',
         role: 'User',
         description: 'Info tentang owner'
+    },
+    {
+        name: 'ss',
+        role: 'User',
+        description: 'screenshot website'
     },
     {
         name: 'ai',
@@ -60,5 +65,10 @@ export const menuList = [
         name: 'ev',
         role: 'Owner',
         description: 'Evaluate'
+    },
+    {
+        name: 'exec',
+        role: 'Owner',
+        description: 'Execute bash command'
     },
 ]

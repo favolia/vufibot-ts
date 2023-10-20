@@ -11,9 +11,17 @@
   "author": "dais",
   "license": "MIT",
   "dependencies": {
+<<<<<<< HEAD
     "@whiskeysockets/baileys": "6.4.1",
+=======
+    "@hapi/boom": "^10.0.1",
+    "@types/express": "^4.17.18",
+    "@whiskeysockets/baileys": "^6.4.1",
+>>>>>>> 17bbe5bb866b0acbb24c4d55b2deb412d57ed6e9
     "axios": "^1.5.0",
     "chalk": "4.0.0",
+    "express": "^4.18.2",
+    "pino": "^8.15.1",
     "qrcode-terminal": "^0.12.0"
   }
 }

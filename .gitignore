@@ -1,2 +1,4 @@
 /node_modules
 /vufi_session
+/dist
+/src/setting2.ts

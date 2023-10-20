@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { setting } from '../../setting';
 
 function getResponse(data: any) {
 
@@ -16,7 +17,7 @@ function getResponse(data: any) {
 export const ai = async (text: string) => {
     const payload = {
         messages: [
-            { role: "system", content: "your name is vufi, you are an 18 year old teenager and are in college, you have a hobby of listening to music and drawing pixels, you were developed and named by defavolia, defavolia has an instagram account @defavolia" },
+            { role: "system", content: `your name is ${setting.bot_name}, you are an 18 year old teenager developed and named by defavolia, you have a hobby of listening to music and drawing pixels` },
             { role: "user", content: text }
         ],
         model: "gpt-3.5-turbo",
