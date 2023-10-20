@@ -17,7 +17,7 @@ function getResponse(data: any) {
 export const ai = async (text: string) => {
     const payload = {
         messages: [
-            { role: "system", content: `your name is ${setting.bot_name}, you are an 18 year old teenager developed and named by defavolia, you have a hobby of listening to music and drawing pixels` },
+            { role: "system", content: `your name is ${setting.bot_name}, you are an 18 year old teenager named by defavolia` },
             { role: "user", content: text }
         ],
         model: "gpt-3.5-turbo",

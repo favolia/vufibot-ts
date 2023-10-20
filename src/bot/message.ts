@@ -3,9 +3,16 @@ import {
     proto
 } from '@whiskeysockets/baileys';
 import { quickReply } from './handler/quickReply';
-import { setting, menuList } from "../setting";
+import { setting, menuList } from "../setting2";
 import { ai } from "./func/ai";
 import { textToImage } from "./func/img";
+import { UserManager } from "../utils/userData";
+import axios from "axios";
+import fs from "fs";
+
+// const _leveling = JSON.parse(fs.readFileSync('./lib/database/group/leveling.json'))
+
+const userMenager = new UserManager("../../lib/database/user.json")
 
 export const _MESSAGE = async (M: any,) => {
 
@@ -186,8 +193,25 @@ export const _MESSAGE = async (M: any,) => {
         })
     }
 
+    const waitMsg = async () => {
+      
+      let _getMsg: any = await awaitMessage({
+        chatJid: from,
+        sender: userJid,
+        filter: (parm: any | undefined) => parm?.message.conversation || parm?.message.extendedTextMessage?.text || parm.message?.imageMessage?.caption || parm?.message.documentMessage?.caption || ''
+      })
+
+      let _newMsg: any = _getMsg?.message.conversation || _getMsg?.message.extendedTextMessage?.text || _getMsg.message?.imageMessage?.caption || _getMsg?.message.documentMessage?.caption || '';
+
+      return _newMsg;
+    }
+
 
     switch (command) {
+
+        case "p": case "ping": {
+          reply("pong")
+        } break;
 
         case 'menu': {
 
@@ -252,7 +276,7 @@ export const _MESSAGE = async (M: any,) => {
                     .contextInfo.participant : null : q;
 
             const replyMsg = !q ? message?.extendedTextMessage?.contextInfo?.quotedMessage?.extendedTextMessage?.text ? message.extendedTextMessage.contextInfo.quotedMessage.extendedTextMessage.text : message?.extendedTextMessage?.contextInfo?.quotedMessage?.conversation ? message.extendedTextMessage.contextInfo.quotedMessage.conversation : message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage?.caption ? message.extendedTextMessage.contextInfo.quotedMessage.imageMessage.caption : message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage?.caption ? message.extendedTextMessage.contextInfo.quotedMessage.videoMessage.caption : '' : q
-            const textInfo = !q ? message?.extendedTextMessage?.contextInfo?.quotedMessage ? `@${phoneNum.replace(/@s.whatsapp.net/, '')}: ${replyMsg}` : q : q;
+            const textInfo = !q ? message?.extendedTextMessage?.contextInfo?.quotedMessage ? `@${phoneNum?.replace(/@s.whatsapp.net/, '')}: ${replyMsg}` : q : q;
 
             let groupUser = await bot.groupMetadata(from);
             let waJids: any[] = [];
@@ -311,6 +335,38 @@ export const _MESSAGE = async (M: any,) => {
             }
 
         } break;
+
+      case "tebaklirik": case "tl": {
+
+        let tebakLagu
+
+        try {
+
+          const { data } = await axios("https://api.im-rgsan.com/SpotifyLyricsGame/")
+
+          tebakLagu = data.data[0]
+          
+          
+        } catch (err) {
+          return reply("Maaf, ada kesalahan. coba lagi")
+        }
+
+        reply(tebakLagu.games.q)
+
+        const answer = await waitMsg()
+
+        answer.toLowerCase() == tebakLagu.games.a.toLowerCase() ? reply(`Jawaban anda benar!\n\n_${tebakLagu.games.a}_`) : reply(`Jawaban anda salah!\n\n${tebakLagu.games.a}`);
+        
+      } break;
+
+      case 'hai': {
+        await reply("Siapa nama mu tuan?")
+
+
+        const answer: any = await waitMsg()
+        
+        await reply(`Hai *${answer}*, apa kabar asu`)
+      } break; 
 
     }
 
