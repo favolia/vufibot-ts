@@ -2,78 +2,32 @@ import {
     WAMessage,
     proto
 } from '@whiskeysockets/baileys';
+import * as userData from "../../lib/database/user.json";
+import {awaitMessage} from "./func/awaitMessage"
 import { quickReply } from './handler/quickReply';
-import { setting, menuList } from "../setting2";
-import { ai } from "./func/ai";
+import { setting, menuData, formatMenu, accountInfoText } from "../setting2";
+import userMenager from "../utils/userMenager";
+import { tiktokTts } from "./func/tikokTts"
 import { textToImage } from "./func/img";
-import { UserManager } from "../utils/userData";
+import { exec } from "./func/exec"
+import { ai } from "./func/ai";
 import axios from "axios";
 import fs from "fs";
+import {
+  family100,
+  siapaKahAku,
+  cakLontong
+} from "./func/games"
 
-// const _leveling = JSON.parse(fs.readFileSync('./lib/database/group/leveling.json'))
+const belumRegist = '🚫 Kamu belum membuat akun\n\nuntuk registrasi ketik:\n_*.regist nama*_'
 
-const userMenager = new UserManager("../../lib/database/user.json")
+    const _User = new userMenager(userData);
 
 export const _MESSAGE = async (M: any,) => {
-
+    await _User.exportUserData()
+  
     const m: proto.IWebMessageInfo = M.messages[0]
     const bot = global.bot
-
-    /**
- * @typedef {Object} awaitMessageOptions
- * @property {Number} [timeout] - The time in milliseconds to wait for a message
- * @property {String} sender - The sender to wait for
- * @property {String} chatJid - The chat to wait for
- * @property {(message: Baileys.proto.IWebMessageInfo) => Boolean} [filter] - The filter to use
-*/
-    /**
-     * 
-     * @param {awaitMessageOptions} options
-     * @returns {Promise<Baileys.proto.IWebMessageInfo>}
-     */
-    async function awaitMessage(options: any = {}) {
-        return new Promise((resolve, reject) => {
-            if (typeof options !== 'object') reject(new Error('Options must be an object'));
-            if (typeof options.sender !== 'string') reject(new Error('Sender must be a string'));
-            if (typeof options.chatJid !== 'string') reject(new Error('ChatJid must be a string'));
-            if (options.timeout && typeof options.timeout !== 'number') reject(new Error('Timeout must be a number'));
-            if (options.filter && typeof options.filter !== 'function') reject(new Error('Filter must be a function'));
-
-            const timeout = options?.timeout || undefined;
-            const filter = options?.filter || (() => true);
-            let interval: any = undefined
-
-            /**
-             * 
-             * @param {{messages: Baileys.proto.IWebMessageInfo[], type: Baileys.MessageUpsertType}} data 
-             */
-            let listener = (data: any) => {
-                let { type, messages } = data;
-                if (type == "notify") {
-                    for (let message of messages) {
-                        const fromMe = message.key.fromMe;
-                        const chatId = message.key.remoteJid;
-                        const isGroup = chatId.endsWith('@g.us');
-                        const isStatus = chatId == 'status@broadcast';
-
-                        const sender = fromMe ? bot.user.id.replace(/:.*@/g, '@') : (isGroup || isStatus) ? message.key.participant.replace(/:.*@/g, '@') : chatId;
-                        if (sender == options.sender && chatId == options.chatJid && filter(message)) {
-                            bot.ev.off('messages.upsert', listener);
-                            clearTimeout(interval);
-                            resolve(message);
-                        }
-                    }
-                }
-            }
-            bot.ev.on('messages.upsert', listener);
-            if (timeout) {
-                interval = setTimeout(() => {
-                    bot.ev.off('messages.upsert', listener);
-                    reject(new Error('Timeout'));
-                }, timeout);
-            }
-        });
-    }
 
     const {
         key,
@@ -128,24 +82,20 @@ export const _MESSAGE = async (M: any,) => {
     const groupInfo = await bot.groupMetadata(from);
     const isAdmin = groupInfo.participants.some((participant: any) => participant.id === userJid && (participant.admin === 'admin' || participant.admin === 'superadmin'));
 
-    const msg: string | undefined | null | any = message?.conversation
-        ? message.conversation
-        : message?.extendedTextMessage
-            ? message?.extendedTextMessage?.text
-            : message?.imageMessage
-                ? message?.imageMessage?.caption
-                : message?.documentMessage
-                    ? message?.documentMessage?.caption
-                    : null;
 
-    const prefix = /^[°•π÷×¶∆£¢€¥®™✓=|~`,*zxcv!?@#$%^&.\/\\©^]/.test(msg) ? msg.match(/^[!?#$,^.,/\/\\©^]/gi) : '-'
+  const msg: string = message?.conversation ||
+    message?.extendedTextMessage?.text ||
+    message?.imageMessage?.caption ||
+    message?.documentMessage?.caption || '';
 
-    const commands = msg?.startsWith(prefix) ? msg.replace(prefix,
-        '') || '' : '';
-    const command = commands?.toLowerCase().split(' ')[0] || ''
+  const prefixRegex = /^[°•π÷×¶∆£¢€¥®™✓=|~`,*zxcv!?@#$%^&.\/\\©^]/;
+  const prefix: string = prefixRegex.test(msg) ? msg.match(prefixRegex)?.[0] || '-' : '-';
+  const commands: string = msg.startsWith(prefix) ? msg.replace(prefix, '') : '';
+  const command: string = commands.toLowerCase().split(' ')[0] || '';
 
-    const args = msg?.trim().split(/ +/).slice(1)
-    let q = args?.join(' ')
+  const args = msg.trim().split(/\s+/);
+  const q = args.slice(1).join(' ');
+  
 
     const isBot: boolean | undefined | null = key?.fromMe
 
@@ -163,7 +113,7 @@ export const _MESSAGE = async (M: any,) => {
     }
 
     const sendAudio = async (text: string) => {
-        await bot.sendMessage(from, { audio: { url: text }, mimetype: 'audio/mp4', fileName: 'lol' }, { quoted: m })
+        await bot.sendMessage(from, { audio: { url: text }, mimetype: 'audio/mp4'}, { quoted: m })
     }
 
     const sendMsg = async (text: string) => {
@@ -205,8 +155,9 @@ export const _MESSAGE = async (M: any,) => {
 
       return _newMsg;
     }
+  
 
-
+  // General command
     switch (command) {
 
         case "p": case "ping": {
@@ -224,11 +175,10 @@ export const _MESSAGE = async (M: any,) => {
                 ppUrl = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
             }
 
-            const _allMenu: string[] = menuList.map((_menu, index) => `(${index + 1}) *.${_menu.name}*\nAccess: _${_menu.role}_\n${_menu.description}`)
-            const allMenu = _allMenu.join('\n\n')
+            const menu: string = formatMenu(menuData)
 
             const content = {
-                text: allMenu,
+                text: menu,
                 contextInfo: {
                     externalAdReply: {
                         title: `Halo ${pushName}`,
@@ -275,7 +225,8 @@ export const _MESSAGE = async (M: any,) => {
                 ?.contextInfo?.participant ? message.extendedTextMessage
                     .contextInfo.participant : null : q;
 
-            const replyMsg = !q ? message?.extendedTextMessage?.contextInfo?.quotedMessage?.extendedTextMessage?.text ? message.extendedTextMessage.contextInfo.quotedMessage.extendedTextMessage.text : message?.extendedTextMessage?.contextInfo?.quotedMessage?.conversation ? message.extendedTextMessage.contextInfo.quotedMessage.conversation : message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage?.caption ? message.extendedTextMessage.contextInfo.quotedMessage.imageMessage.caption : message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage?.caption ? message.extendedTextMessage.contextInfo.quotedMessage.videoMessage.caption : '' : q
+          const replyMsg = !q ? (message?.extendedTextMessage?.contextInfo?.quotedMessage?.extendedTextMessage?.text || message?.extendedTextMessage?.contextInfo?.quotedMessage?.conversation ||  message?.extendedTextMessage?.contextInfo?.quotedMessage?.imageMessage?.caption || message?.extendedTextMessage?.contextInfo?.quotedMessage?.videoMessage?.caption) : q;
+
             const textInfo = !q ? message?.extendedTextMessage?.contextInfo?.quotedMessage ? `@${phoneNum?.replace(/@s.whatsapp.net/, '')}: ${replyMsg}` : q : q;
 
             let groupUser = await bot.groupMetadata(from);
@@ -306,20 +257,6 @@ export const _MESSAGE = async (M: any,) => {
 
         } break;
 
-        case 'ev': {
-            if (!isOwner) return reply('kamu bukan owner!');
-            if (!q) return reply('kirim kode javascript');
-
-            try {
-                let evaled = await eval(q)
-                if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
-                reply(`» ${evaled}`)
-            } catch (err: any) {
-                console.error(err)
-                reply(`» Error: ${err.message}`)
-            }
-        } break;
-
         case 'bye': {
             if (!from.includes('@g.us')) return reply('_command hanya bisa digunakan di grup._')
             if (!isAdmin) return reply('kamu bukan admin.')
@@ -336,30 +273,7 @@ export const _MESSAGE = async (M: any,) => {
 
         } break;
 
-      case "tebaklirik": case "tl": {
-
-        let tebakLagu
-
-        try {
-
-          const { data } = await axios("https://api.im-rgsan.com/SpotifyLyricsGame/")
-
-          tebakLagu = data.data[0]
-          
-          
-        } catch (err) {
-          return reply("Maaf, ada kesalahan. coba lagi")
-        }
-
-        reply(tebakLagu.games.q)
-
-        const answer = await waitMsg()
-
-        answer.toLowerCase() == tebakLagu.games.a.toLowerCase() ? reply(`Jawaban anda benar!\n\n_${tebakLagu.games.a}_`) : reply(`Jawaban anda salah!\n\n${tebakLagu.games.a}`);
-        
-      } break;
-
-      case 'hai': {
+        case 'hai': {
         await reply("Siapa nama mu tuan?")
 
 
@@ -370,12 +284,216 @@ export const _MESSAGE = async (M: any,) => {
 
     }
 
+  
 
-    // bot.sendMessage(from, { text: 'halo juga' })
+    // Games command
+    switch (command) {
+        case "tebaklirik": case "tl": {
+          const isRegistered = _User.searchUserByPhone(userJid)
+          if(!isRegistered.status) return reply(belumRegist)
 
-    // console.log(JSON.stringify(m, undefined, 2))
+          let tebakLirik
 
-    // console.log('replying to', m.messages[0].key.remoteJid)
-    // await bot.sendMessage(m.messages[0].key.remoteJid!, { text: 'Hello there!' })
-    // await bot.sendMessage('628875090455@s.whatsapp.net', { text: 'Hello there!' })
+          try {
+
+            const { data } = await axios("https://api.im-rgsan.com/SpotifyLyricsGame/")
+
+            tebakLirik = data.data[0]
+            // const bufferTebakLirik = await tiktokTts(tebakLirik.lyrics)
+            // bot.sendMessage(from, {audio: Buffer.from(bufferTebakLirik, 'base64'), mimetype: 'audio/mp4', ppt: true}, {quoted: m}).catch((err: any) => console.log(err.message))
+
+
+          } catch (err) {
+            return reply("Maaf, ada kesalahan. coba lagi")
+          }
+
+          reply(tebakLirik.games.q)
+
+          const answer = await waitMsg()
+
+          if (answer.toLowerCase() == tebakLirik.games.a.toLowerCase()) {
+            reply(`🎉 *Kamu benar!* +${setting.gameSetting.quiz.tebakLirikPoint}💵\nuangmu: ${isRegistered?.data ? isRegistered.data.money + setting.gameSetting.quiz.tebakLirikPoint : setting.gameSetting.quiz.tebakLirikPoint}💵\n\n_${tebakLirik.games.a}_`)
+            _User.addMoney({ id: isRegistered?.data?.id, amount: 5  })
+            _User.addQuizWin({ id: isRegistered?.data?.id, amount: 1  })
+            _User.addQuizStreak({ id: isRegistered?.data?.id, isWin: true, amount: 1 })
+          } else {
+             reply(`Jawaban mu salah!\n\n${tebakLirik.games.a}`);
+            _User.addQuizLose({ id: isRegistered?.data?.id, amount: 1  })
+            _User.addQuizStreak({ id: isRegistered?.data?.id, isWin: false, amount: 0 })
+          }
+
+
+        } break;
+
+        case 'caklontong': case 'cl': {
+          const isRegistered = _User.searchUserByPhone(userJid)
+          if(!isRegistered.status) return reply(belumRegist)
+
+            const catong = await cakLontong()
+
+            if (!catong.status) return reply("Maaf, ada kesalahan. coba lagi");
+            reply(catong.data.soal);
+        
+            const answer = await waitMsg()
+
+            if (answer.toLowerCase() == catong.data.jawaban.toLowerCase()) {
+              reply(`🎉 *Kamu benar!* +${setting.gameSetting.quiz.cakLontongPoint}💵\nuangmu: ${isRegistered?.data ? isRegistered.data.money + setting.gameSetting.quiz.cakLontongPoint : setting.gameSetting.quiz.cakLontongPoint}💵\n\n_${catong.data.jawaban}_\n\n${catong.data.deskripsi || ''}`)
+              _User.addMoney({ id: isRegistered?.data?.id, amount: setting.gameSetting.quiz.cakLontongPoint  })
+              _User.addQuizWin({ id: isRegistered?.data?.id, amount: 1  })
+              _User.addQuizStreak({ id: isRegistered?.data?.id, isWin: true, amount: 1 })
+
+            
+            } else {
+              reply(`🚫 *Salah!*\n\n${catong?.data?.jawaban}\n\n${catong.data.deskripsi || ''}`);
+              _User.addQuizLose({ id: isRegistered?.data?.id, amount: 1  })
+              _User.addQuizStreak({ id: isRegistered?.data?.id, isWin: false, amount: 0 })
+            }
+
+
+        } break;
+    }
+  
+
+    // account command
+    switch (command) {
+      case 'regist': {
+        const isRegistered = _User.searchUserByPhone(userJid)
+
+        if(isRegistered.status) return reply(`Kamu sudah terdaftar ketik\n.akun untuk melihat akun.`)
+        
+        if (!q) return reply("Masukkan username\ncontoh: .regist nama");
+        if (q?.length < setting.accountSetting.min_username_length) return reply(`Nama terlalu pendek *minimal ${setting.accountSetting.min_username_length} huruf!*`);
+
+        if (q?.length > setting.accountSetting.min_username_length) return reply(`Nama terlalu panjang *maximal ${setting.accountSetting.min_username_length} huruf!*`);
+
+        const result: any = _User.regist({ phone: userJid, username: q })
+
+        if (result.status) {
+          reply(`✅ *Berhasil registrasi!*\n\nDetail akun ketik:\n.akun`);
+        } else {
+          reply(result.message)
+        }
+
+        
+      } break;
+
+      case 'akun': {
+        const isRegistered = _User.searchUserByPhone(userJid)
+        if(!isRegistered.status) return reply(belumRegist)
+
+        reply(accountInfoText({
+          username: isRegistered.data?.username,
+          money: isRegistered.data?.money,
+          highestMoney: isRegistered.data?.highestMoney,
+          quizWin: isRegistered.data?.quiz?.win,
+          quizLose: isRegistered.data?.quiz?.lose,
+          gold: isRegistered.data?.gold,
+          id: isRegistered.data?.id,
+          quizStreak: isRegistered.data?.quiz?.lastStreak,
+        }))
+        
+      } break;
+
+      case 'gantinama': {
+        const isRegistered = _User.searchUserByPhone(userJid)
+        if(!isRegistered.status) return reply(belumRegist)
+        
+        if (!q) return reply("Masukkan username contoh:\n*.gantinama nama_baru*");
+        if (q?.length < setting.accountSetting.min_username_length) return reply(`Nama terlalu pendek *minimal ${setting.accountSetting.min_username_length} huruf!*`);
+        if (q?.length > setting.accountSetting.max_username_length) return reply(`Nama terlalu panjang *maximal ${setting.accountSetting.max_username_length} huruf!*`);
+
+        const result: any = _User.updateUsername({ id: isRegistered?.data?.id, username: q })
+
+        if (!result.status) return reply(result.messageInd)
+
+        reply(`✅ *Berhasil mengganti nama ${result.oldName} ke ${result.newName} !*\n\nDetail akun ketik:\n.akun`);
+        
+      } break;
+
+      case 'cekakun': {
+        
+        if(!q) return reply(`Masukkan username atau id contoh:\n*.cekakun nama_atau_id*`)
+
+        const findId = _User.searchUserById(q)
+        const findUsername = _User.searchUserByUsername(q)
+
+        if(!findId.status && !findUsername.status) return reply(`Username atau id tidak ditemukan`)
+
+        if(findId.status) {
+
+          reply(accountInfoText({
+            username: findId.data?.username,
+            money: findId.data?.money,
+            highestMoney: findId.data?.highestMoney,
+            quizWin: findId.data?.quiz?.win,
+            quizLose: findId.data?.quiz?.lose,
+            gold: findId.data?.gold,
+            id: findId.data?.id,
+            quizStreak: findId.data?.quiz?.lastStreak,
+          }))
+ 
+        
+        } else {
+          
+
+          reply(accountInfoText({
+            username: findUsername.data?.username,
+            money: findUsername.data?.money,
+            highestMoney: findUsername.data?.highestMoney,
+            quizWin: findUsername.data?.quiz?.win,
+            quizLose: findUsername.data?.quiz?.lose,
+            gold: findUsername.data?.gold,
+            id: findUsername.data?.id,
+            quizStreak: findUsername.data?.quiz?.lastStreak,
+          }))
+          
+        } 
+
+      } break;
+
+      case 'money': {
+        const isRegistered = _User.searchUserByPhone(userJid)
+        if(!isRegistered.status) return reply(belumRegist)
+
+        const userMoney = _User.getCurrentMoney({ id: isRegistered?.data?.id})
+        if(!userMoney.status) return reply(userMoney.messageInd || 'User tidak ditemukan.')
+
+        reply(userMoney.money+' 💵')
+      } break;
+
+      case 'leaderboard': {
+        
+      } break;
+
+        
+    }
+
+
+    // Owner command
+    switch (command) {
+        case 'ev': {
+            if (!isOwner) return reply('kamu bukan owner!');
+            if (!q) return reply('kirim kode javascript');
+
+            try {
+                let evaled = await eval(q)
+                if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
+                reply(`» ${evaled}`)
+            } catch (err: any) {
+                console.error(err)
+                reply(`» Error: ${err.message}`)
+            }
+        } break;
+
+        case 'exec': {
+          if (!isOwner) return reply('kamu bukan owner!');
+          if (!q) return reply('Kirim kode bash.');
+
+          const exec_result = await exec(q)
+
+          reply(exec_result)
+
+
+        } break;
+    }
 }
