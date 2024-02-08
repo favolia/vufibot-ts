@@ -12,7 +12,7 @@ export const _socket = async () => {
     printQRInTerminal: true,
     auth: state,
     logger: pino({
-      level: setting.socket_config.logger_level
+        level: 'silent'
     }),
     browser: [
       'Safari',
