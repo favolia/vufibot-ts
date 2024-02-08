@@ -66,6 +66,11 @@ export const menuData = [
           role: 'User',
           description: 'hidetag'
       },
+      {
+          name: 'spotify',
+          role: 'User',
+          description: 'Mencari/Mendownload lagu di spotify'
+      },
     ]
   },
   {

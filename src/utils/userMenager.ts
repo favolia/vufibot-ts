@@ -11,11 +11,23 @@ interface User {
   highestMoney: number;
   phone: string;
   quiz: {
+    match: number,
     win: number,
     lose: number,
     streak: number,
     lastStreak: number,
-  }
+  },
+  // adventure: {
+  //   power: number,
+  //   coin: number,
+  //   exp: number,
+  //   level: number,
+  //   health: number,
+  //   match: number,
+  //   win: number,
+  //   streak: number,
+  //   lastStreak: number,
+  // },
 }
 
 class UserManager {
@@ -30,8 +42,8 @@ class UserManager {
   getCurrentMoney({ id }: { id: string | undefined }) {
     const user = this._user.find((a) => a.id === id);
     if (!user) return { status: false, message: 'User not found', messageInd: 'User tidak ditemukan.' };
-    
-    return { status: true, money: user.money};
+
+    return { status: true, money: user.money };
   }
 
   addMoney({ id, amount = 0 }: { id: string | undefined; amount: number }) {
@@ -58,7 +70,7 @@ class UserManager {
     }
 
     const id = shortid.generate();
-    const newUser: User = { id, username, oldUsername: [], money: 5, highestMoney: 5, gold: 0, quiz: { win: 0, lose: 0, streak: 0, lastStreak: 0 }, phone, };
+    const newUser: User = { id, username, oldUsername: [], money: 5, highestMoney: 5, gold: 0, phone, quiz: { match: 0, win: 0, lose: 0, streak: 0, lastStreak: 0 },  };
     this._user.push(newUser);
 
     return { status: true, message: 'User registered successfully!', data: newUser };
@@ -114,7 +126,7 @@ class UserManager {
     const oldName = user?.username;
     user.oldUsername.push(oldName);
     user.username = username;
-    return { status: true, newName: user.username, oldName};
+    return { status: true, newName: user.username, oldName };
   }
 
   getList() {
@@ -137,27 +149,27 @@ class UserManager {
   searchUserByUsername(username: string) {
     const user = this._user.find((user) => user.username.toLowerCase() === username.toLowerCase());
     if (user) {
-      return { status: true, data: user};
+      return { status: true, data: user };
     } else {
-      return { status: false, message: { status: false, message: 'User not found' }};
+      return { status: false, message: { status: false, message: 'User not found' } };
     }
   }
-  
+
   searchUserById(id: string) {
     const user = this._user.find((user) => user.id === id);
     if (user) {
-      return { status: true, data: user};
+      return { status: true, data: user };
     } else {
-      return { status: false, message: { status: false, message: 'User not found' }};
+      return { status: false, message: { status: false, message: 'User not found' } };
     }
   }
 
   searchUserByPhone(phone: string | null | undefined) {
     const user = this._user.find((user) => user.phone === phone);
     if (user) {
-      return { status: true, data: user};
+      return { status: true, data: user };
     } else {
-      return { status: false, message: 'User not found'};
+      return { status: false, message: 'User not found' };
     }
   }
 
@@ -241,7 +253,7 @@ class UserManager {
     user.quiz.win += amount;
     return { status: true, data: user.quiz.win };
   }
-  
+
   addQuizLose({ id, amount }: { id: string | undefined, amount: number }) {
     const user = this._user.find((a) => a.id === id);
     if (!user) {
@@ -258,20 +270,62 @@ class UserManager {
     }
 
     if (isWin) {
-      user.quiz.streak += amount;
-
-      if (user.quiz.streak >= 2) {
-        user.quiz.lastStreak = user.quiz.streak;
+      if (user.quiz.streak + amount > user.quiz.lastStreak) {
+        user.quiz.lastStreak = user.quiz.streak + amount;
       }
+
+      user.quiz.streak += amount;
     } else {
+
       user.quiz.streak = 0;
     }
 
     return { status: true, data: user.quiz };
   }
 
+  setQuizMatch({ id, match }: { id: string | undefined, match: number | undefined }) {
+    if (!match || typeof match != "number") return { status: false, message: 'Invalid match', messageInd: 'Match tidak valid.' };
+    const user = this._user.find((a) => a.id === id);
+    if (!user) {
+      return { status: false, message: 'User not found', messageInd: 'User tidak ditemukan.' };
+    }
+    user.quiz.match = match;
+    return { status: true, data: user.quiz };
+  }
+
+
+  getLeaderboardHighestMoney() {
+    const sortedUsers = this._user.slice().sort((a, b) => b.highestMoney - a.highestMoney);
+    return sortedUsers;
+  }
+
+  getLeaderboardMoney() {
+    const sortedUsers = this._user.slice().sort((a, b) => b.money - a.money);
+    return sortedUsers;
+  }
+
+  getLeaderboardStreakQuiz() {
+    const sortedUsers = this._user.slice().sort((a, b) => b.quiz.lastStreak - a.quiz.lastStreak);
+    return sortedUsers;
+  }
+
+  getLeaderboardWinQuiz() {
+    const sortedUsers = this._user.slice().sort((a, b) => b.quiz.win - a.quiz.win);
+    return sortedUsers;
+  }
+
+  getLeaderboardLoseQuiz() {
+    const sortedUsers = this._user.slice().sort((a, b) => b.quiz.lose - a.quiz.lose);
+    return sortedUsers;
+  }
+
+  getLeaderboardMatchQuiz() {
+    const sortedUsers = this._user.slice().sort((a, b) => b.quiz.match - a.quiz.match);
+    return sortedUsers;
+  }
 
   
+
 }
 
 export default UserManager;
