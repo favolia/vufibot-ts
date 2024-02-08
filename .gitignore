@@ -3,3 +3,4 @@
 /dist
 /src/setting2.ts
 /lib/database/user.json
+/package-lock.json
